@@ -48,7 +48,8 @@ Payload:
   "unique_id": "thermo_kitchen_temparature",
   "name": "Kitchen Temparature",
   "state_topic": "home/kitchen/climate",
-  "value_template": "{{ value_json.Temparature }}"
+  "value_template": "{{ value_json.Temparature }}",
+  "device_class": "temperature"
 }
 ```
 
@@ -70,6 +71,29 @@ Payload:
   "unique_id": "thermo_kitchen_humidity",
   "name": "Kitchen Humidity",
   "state_topic": "home/kitchen/climate",
-  "value_template": "{{ value_json.Humidity }}"
+  "value_template": "{{ value_json.Humidity }}",
+  "device_class": "humidity"
+}
+```
+
+### Entity 3
+
+Topic: `homeassistant/sensor/kitchenthermo/ip/config`
+
+Payload:
+
+```json
+{
+  "device": {
+    "identifiers": "thermo_bedroom",
+    "manufacturer": "Puvvadi",
+    "model": "PicoW",
+    "name": "Bedroom Thermostat"
+  },
+  "object_id": "thermo_bedroom_ip",
+  "unique_id": "thermo_bedroom_ip",
+  "name": "IP",
+  "state_topic": "home/bedroom/climate",
+  "value_template": "{{ value_json.IP }}"
 }
 ```
