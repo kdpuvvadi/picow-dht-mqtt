@@ -35,8 +35,8 @@ class Thermostat:
         name,
         state_topic,
         value_template,
-        device_class,
-        unit_of_measurement,
+        device_class= None,
+        unit_of_measurement=None,
     ):
         self.init_device(identifiers, manufacturer, model, device_name)
         self.object_id = object_id
@@ -84,7 +84,7 @@ entity_temparature = Thermostat(
     state_topic="home/bedroom/climate",
     value_template="{{ value_json.Temperature }}",
     device_class="temperature",
-    unit_of_measurement= chr(176) + "C",
+    unit_of_measurement= chr(176) + "C"
 )
 
 entity_humidity = Thermostat(
@@ -98,7 +98,7 @@ entity_humidity = Thermostat(
     state_topic="home/bedroom/climate",
     value_template="{{ value_json.Humidity }}",
     device_class="humidity",
-    unit_of_measurement= "%",
+    unit_of_measurement= "%"
 )
 
 entity_ip = Thermostat(
@@ -110,9 +110,7 @@ entity_ip = Thermostat(
     unique_id="thermo_bedroom_ip",
     name="Bedroom Thermostat IP",
     state_topic="home/bedroom/climate",
-    value_template="{{ value_json.IP }}",
-    device_class="",
-    unit_of_measurement="",
+    value_template="{{ value_json.IP }}"
 )
 
 MQTT_AUTODISC_TEMP = entity_temparature.to_json()
@@ -124,21 +122,25 @@ MQTT_AUTODISC_HUM_TOPIC = 'homeassistant/sensor/bedroomthermo/humidity/config'
 MQTT_AUTODISC_IP = entity_ip.to_json()
 MQTT_AUTODISC_IP_TOPIC = 'homeassistant/sensor/bedroomthermo/ip/config'
 
+
 def connect_mqtt():
     try:
-        client = MQTTClient(client_id=MQTT_CLIENT_ID,
-                            server=MQTT_SERVER,
-                            port=MQTT_PORT,
-                            user=MQTT_USER,
-                            password=MQTT_PASSWORD,
-                            keepalive=MQTT_KEEPALIVE,
-                            ssl=MQTT_SSL,
-                            ssl_params=MQTT_SSL_PARAMS)
+        client = MQTTClient(
+            client_id=MQTT_CLIENT_ID,
+            server=MQTT_SERVER,
+            port=MQTT_PORT,
+            user=MQTT_USER,
+            password=MQTT_PASSWORD,
+            keepalive=MQTT_KEEPALIVE,
+            ssl=MQTT_SSL,
+            ssl_params=MQTT_SSL_PARAMS,
+        )
         client.connect()
         return client
     except Exception as e:
         print('Error connecting to MQTT:', e)
         raise
+
 
 def publish_mqtt(topic, value):
     client.publish(topic, value, retain=True)
@@ -165,7 +167,13 @@ try:
     sleep(2)
     while True:
         sensor.measure()
-        payload = json.dumps({ "Temperature": sensor.temperature(), "Humidity":  sensor.humidity(), "IP": ip})
+        payload = json.dumps(
+            {
+                "Temperature": sensor.temperature(),
+                "Humidity": sensor.humidity(),
+                "IP": ip,
+            }
+        )
         publish_mqtt(MQTT_TOPIC, str(payload))
         sleep(2)
 
